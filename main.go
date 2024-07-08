@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"gitlab.com/flimzy/errsql"
+	errsql "github.com/flimzy/bugrepro/proxy"
 	_ "modernc.org/sqlite"
 )
 
