@@ -24,8 +24,8 @@ func (*Driver) newEvent(method string) *Event {
 // unaltered.
 func New(driver driver.Driver, eh ErrorHandler) *Driver {
 	return NewWithHooks(driver, &Hooks{
-		ErrorHook: func(e *Event, err error) error {
-			return eh(err)
+		ErrorHook: func(_ *Event, err error) error {
+			return err
 		},
 	})
 }

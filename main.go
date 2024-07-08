@@ -15,7 +15,7 @@ func main() {
 	}
 	defer db.Close()
 	drv := db.Driver()
-	connector, err := errsql.NewWithHooks(drv, &errsql.Hooks{}).OpenConnector(":memory:")
+	connector, err := errsql.New(drv, nil).OpenConnector(":memory:")
 	if err != nil {
 		panic(err)
 	}
