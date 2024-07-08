@@ -25,3 +25,44 @@ func (d *Driver) Open(name string) (driver.Conn, error) {
 	}
 	return driver.Conn(&connWrapper{Conn: conn}), nil
 }
+
+type connWrapper struct {
+	driver.Conn
+}
+
+var _ driver.Conn = (*connWrapper)(nil)
+
+func (c *connWrapper) Prepare(query string) (driver.Stmt, error) {
+	stmt, err := c.Conn.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+	return driver.Stmt(&stmtWrapper{Stmt: stmt}), nil
+}
+
+type stmtWrapper struct {
+	driver.Stmt
+}
+
+var (
+	_ driver.Stmt            = (*stmtWrapper)(nil)
+	_ driver.ColumnConverter = (*stmtWrapper)(nil)
+)
+
+func (s *stmtWrapper) ColumnConverter(idx int) driver.ValueConverter {
+	columnConverter, ok := s.Stmt.(driver.ColumnConverter)
+	if !ok {
+		return driver.DefaultParameterConverter
+	}
+	return driver.ValueConverter(&valueConverterWrapper{v: columnConverter.ColumnConverter(idx)})
+}
+
+type valueConverterWrapper struct {
+	v driver.ValueConverter
+}
+
+var _ driver.ValueConverter = valueConverterWrapper{}
+
+func (vc valueConverterWrapper) ConvertValue(v any) (driver.Value, error) {
+	return vc.v.ConvertValue(v)
+}
