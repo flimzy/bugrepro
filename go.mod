@@ -2,12 +2,7 @@ module github.com/flimzy/bugrepro
 
 go 1.22.0
 
-require (
-	github.com/mattn/go-sqlite3 v1.14.19
-	github.com/pkg/errors v0.9.1
-	gitlab.com/flimzy/errsql v0.1.2
-	modernc.org/sqlite v1.30.1
-)
+require modernc.org/sqlite v1.30.1
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect

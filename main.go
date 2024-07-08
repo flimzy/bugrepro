@@ -15,11 +15,12 @@ func main() {
 	}
 	defer db.Close()
 	drv := db.Driver()
-	connector, err := errsql.New(drv, nil).OpenConnector(":memory:")
+	edrv := errsql.New(drv)
+	sql.Register("proxy", edrv)
+	db, err = sql.Open("proxy", ":memory:")
 	if err != nil {
 		panic(err)
 	}
-	db = sql.OpenDB(connector)
 
 	stmt, err := db.PrepareContext(context.Background(), "SELECT $1")
 	if err != nil {
